@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.soap.Node;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 import javax.xml.transform.OutputKeys;
@@ -16,16 +17,16 @@ import javax.xml.transform.stream.StreamResult;
 
 public class STElement {
 	protected SOAPElement el;
-	
+
 	static private STElement ST_NULL = new STElement(null);
-	
+
 	protected STElement (SOAPElement el) { this.el = el; }
 
 	public STElement addChild(String tag)
 	{
 		return addChild(tag, null);
 	}
-	
+
 	public STElement addChild(String tag, String ns) 
 	{
 		if (el == null) return ST_NULL;
@@ -61,25 +62,25 @@ public class STElement {
 		String text = el.getTextContent();
 		return text == null ? "" : text;
 	}
-	
+
 	public String getName()
 	{
 		if (el == null) return null;
 		return el.getElementName().getLocalName();
 	}
-	
+
 	public String getPrefix()
 	{
 		if (el == null) return null;
 		return el.getElementName().getPrefix();
 	}
-	
+
 	public String getFullName()
 	{
 		if (el == null) return null;
 		return el.getElementName().getQualifiedName();
 	}
-	
+
 	public SOAPElement getSOAPElement()
 	{
 		return el;
@@ -91,24 +92,30 @@ public class STElement {
 		@SuppressWarnings("rawtypes")
 		Iterator iterator = el.getChildElements();
 		while (iterator.hasNext()) {
-			SOAPElement e = (SOAPElement) iterator.next();
-			if (e.getElementName().getLocalName().equals(tagName))
-				return new STElement(e);
+			Node n = (Node)iterator.next();
+			if (n instanceof SOAPElement) {
+				SOAPElement e = (SOAPElement) n;
+				if (e.getElementName().getLocalName().equals(tagName))
+					return new STElement(e);
+			}
 		}
 		return ST_NULL;
 	}
-	
+
 	public List<STElement> getChilds(String tagName)
 	{
 		List<STElement> list = new LinkedList<STElement>();
 		if (el == null) return list;
-		
+
 		@SuppressWarnings("rawtypes")
 		Iterator iterator = el.getChildElements();
 		while (iterator.hasNext()) {
-			SOAPElement e = (SOAPElement) iterator.next();
-			if (e.getElementName().getLocalName().equals(tagName))
-				list.add(new STElement(e));
+			Node n = (Node)iterator.next();
+			if (n instanceof SOAPElement) {
+				SOAPElement e = (SOAPElement) n;
+				if (e.getElementName().getLocalName().equals(tagName))
+					list.add(new STElement(e));
+			}
 		}
 
 		return list;
@@ -123,7 +130,7 @@ public class STElement {
 	{
 		return el == null;
 	}
-	
+
 	@Override
 	public String toString()
 	{
