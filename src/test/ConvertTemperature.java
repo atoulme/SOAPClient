@@ -28,6 +28,9 @@ public class ConvertTemperature {
 		STElement res = ws.call();
 		
 		res = res.getChild("ConvertTempResponse");
+		
+		System.out.println(res.toStringEx());
+
 		System.out.println(res.getChildContent("ConvertTempResult"));
 	}
 }

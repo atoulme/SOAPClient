@@ -144,4 +144,20 @@ public class STElement {
 		}
 		return sw.toString();
 	}
+	
+	public String toStringEx()
+	{
+		StringWriter sw = new StringWriter();
+		try {
+			Transformer t = TransformerFactory.newInstance().newTransformer();
+			t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			t.setOutputProperty(OutputKeys.INDENT, "yes");
+			t.transform(new DOMSource(el), new StreamResult(sw));
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+		return sw.toString();
+	}
+	
+
 }
